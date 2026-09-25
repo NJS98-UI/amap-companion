@@ -111,7 +111,7 @@ if ($env:APP_VERSION_NAME) {
 Check-Last 'aapt generate R'
 
 $sources = @()
-$sources += Get-ChildItem -Recurse -File app\src\main\java -Filter *.java | ForEach-Object { $_.FullName.Substring($root.Length + 1) }
+$sources += Get-ChildItem -Recurse -File app/src/main/java -Filter *.java | ForEach-Object { $_.FullName.Substring($root.Length + 1) }
 $sources += Get-ChildItem -Recurse -File $genDir -Filter *.java | ForEach-Object { $_.FullName.Substring($root.Length + 1) }
 [System.IO.File]::WriteAllLines($sourcesFile, [string[]]$sources, (New-Object System.Text.UTF8Encoding($false)))
 
