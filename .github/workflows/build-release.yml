@@ -6,6 +6,8 @@ on:
       - master
     paths:
       - 'app/**'
+      - 'build.ps1'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 permissions:
