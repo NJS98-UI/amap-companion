@@ -1278,7 +1278,9 @@ public class MainActivity extends Activity {
 
     private void chooseTargetApp() {
         ArrayList<AppChoice> allChoices = new ArrayList<>();
+        ArrayList<AppChoice> mapChoices = new ArrayList<>();
         ArrayList<AppChoice> choices = new ArrayList<>();
+        final boolean[] showingAll = {true};
         LinearLayout dialogContent = new LinearLayout(this);
         dialogContent.setOrientation(LinearLayout.VERTICAL);
         dialogContent.setPadding(dp(8), 0, dp(8), 0);
@@ -1295,7 +1297,7 @@ public class MainActivity extends Activity {
         dialogContent.addView(listView, new LinearLayout.LayoutParams(-1, Math.min(dp(520), getResources().getDisplayMetrics().heightPixels / 2)));
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("\u9009\u62e9\u76ee\u6807\u5e94\u7528")
-                .setNegativeButton("\u663e\u793a\u6240\u6709\u5e94\u7528", null)
+                .setNegativeButton("\u4ec5\u663e\u793a\u5730\u56fe\u5e94\u7528", null)
                 .setView(dialogContent)
                 .create();
         listView.setOnItemClickListener((parent, view, which, id) -> {
@@ -1310,24 +1312,37 @@ public class MainActivity extends Activity {
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(v -> {
             choices.clear();
-            choices.addAll(allChoices);
+            android.widget.Button btn = (android.widget.Button) v;
+            if (showingAll[0]) {
+                choices.addAll(mapChoices);
+                if (choices.isEmpty()) {
+                    choices.addAll(allChoices);
+                }
+                showingAll[0] = false;
+                hint.setText("\u4ec5\u663e\u793a com.autonavi.* \u5305\u540d\u6216\u540d\u79f0\u5305\u542b\u201c\u5730\u56fe\u201d\u7684\u5e94\u7528\uff0c\u70b9\u51fb\u6309\u94ae\u53ef\u663e\u793a\u5168\u90e8\u5e94\u7528\u3002");
+                btn.setText("\u663e\u793a\u5168\u90e8\u5e94\u7528");
+            } else {
+                choices.addAll(allChoices);
+                showingAll[0] = true;
+                hint.setText("\u5df2\u663e\u793a\u672c\u673a\u5168\u90e8\u5df2\u5b89\u88c5\u5e94\u7528\uff0c\u9ad8\u5fb7/\u5730\u56fe\u7c7b\u5e94\u7528\u5df2\u7f6e\u9876\u3002");
+                btn.setText("\u4ec5\u663e\u793a\u5730\u56fe\u5e94\u7528");
+            }
             if (choices.isEmpty()) {
                 choices.add(new AppChoice(AppPrefs.DEFAULT_TARGET_PACKAGE, AppPrefs.DEFAULT_TARGET_PACKAGE, false, false, false, true));
             }
-            hint.setText("\u5df2\u663e\u793a\u6240\u6709\u53ef\u89c1\u5e94\u7528\u5305\u3002");
             adapter.notifyDataSetChanged();
         });
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(false);
         new Thread(() -> {
             ArrayList<AppChoice> loadedChoices = loadTargetAppChoices();
-            ArrayList<AppChoice> filteredChoices = new ArrayList<>();
+            ArrayList<AppChoice> filteredMapChoices = new ArrayList<>();
             for (AppChoice choice : loadedChoices) {
                 if (choice.mapNamed || choice.amapPackage) {
-                    filteredChoices.add(choice);
+                    filteredMapChoices.add(choice);
                 }
             }
-            boolean fallbackToAll = filteredChoices.isEmpty();
-            ArrayList<AppChoice> visibleChoices = fallbackToAll ? loadedChoices : filteredChoices;
+            // 默认显示本机全部应用，高德/地图类应用已在排序时置顶
+            ArrayList<AppChoice> visibleChoices = new ArrayList<>(loadedChoices);
             if (visibleChoices.isEmpty()) {
                 visibleChoices.add(new AppChoice(AppPrefs.DEFAULT_TARGET_PACKAGE,
                         AppPrefs.DEFAULT_TARGET_PACKAGE, false, false, false, true));
@@ -1339,11 +1354,11 @@ public class MainActivity extends Activity {
                 }
                 allChoices.clear();
                 allChoices.addAll(loadedChoices);
+                mapChoices.clear();
+                mapChoices.addAll(filteredMapChoices);
                 choices.clear();
                 choices.addAll(result);
-                hint.setText(fallbackToAll
-                        ? "\u672a\u627e\u5230 com.autonavi.* \u6216\u540d\u79f0\u5305\u542b\u201c\u5730\u56fe\u201d\u7684\u5e94\u7528\uff0c\u5df2\u663e\u793a\u6240\u6709\u53ef\u89c1\u5e94\u7528\u5305\u3002"
-                        : "\u4f18\u5148\u663e\u793a com.autonavi.* \u5305\u540d\u6216\u540d\u79f0\u5305\u542b\u201c\u5730\u56fe\u201d\u7684\u5e94\u7528\u3002");
+                hint.setText("\u5df2\u663e\u793a\u672c\u673a\u5168\u90e8\u5df2\u5b89\u88c5\u5e94\u7528\uff0c\u9ad8\u5fb7/\u5730\u56fe\u7c7b\u5e94\u7528\u5df2\u7f6e\u9876\u3002\u53ef\u70b9\u51fb\u53f3\u4e0b\u89d2\u6309\u94ae\u4ec5\u7b5b\u9009\u5730\u56fe\u5e94\u7528\u3002");
                 adapter.notifyDataSetChanged();
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(true);
             });

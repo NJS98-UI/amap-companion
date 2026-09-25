@@ -19,7 +19,7 @@ This custom map sends additional broadcast fields `lightsData`, `lightsCount`, a
 ## Main Features
 
 - Draggable floating window; tapping the floating window opens the main interface.
-- Supports user-selected target application package names; the current target app list filters out `com.autonavi.*`.
+- Supports user-selected target application package names; by default lists all installed apps on the device, with AMap/map apps pinned to the top; a one-click toggle lets you filter to map/navigation apps only.
 - Supports navigation mode and cruise mode status display.
 - Supports displaying lane information from the AMap AMapAuto broadcast protocol.
 - Uses AMap-style lane icon resources to render complex lanes, avoiding overlap and confusion caused by simple arrow reuse.

@@ -2631,12 +2631,14 @@ public class OverlayService extends Service {
     private void refreshPanelVisibility() {
         if (panel != null) {
             applyOverlayTextOutlines(panel);
-            panel.setVisibility(hasVisibleChildren(panel) ? View.VISIBLE : View.GONE);
+            // 始终显示悬浮窗，确保投屏展示全部画面内容，不因暂无导航数据而隐藏
+            panel.setVisibility(View.VISIBLE);
             schedulePanelSizeStabilizer(panel, false);
         }
         if (clusterPanel != null) {
             applyOverlayTextOutlines(clusterPanel);
-            clusterPanel.setVisibility(hasVisibleChildren(clusterPanel) ? View.VISIBLE : View.GONE);
+            // 副屏投屏始终显示，展示全部画面内容
+            clusterPanel.setVisibility(View.VISIBLE);
             schedulePanelSizeStabilizer(clusterPanel, true);
         }
     }

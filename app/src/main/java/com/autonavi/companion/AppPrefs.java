@@ -99,7 +99,7 @@ public final class AppPrefs {
             0xFF3A3328
     };
     public static final int MIN_OVERLAY_SCALE_PERCENT           = 30;
-    public static final int MAX_OVERLAY_SCALE_PERCENT           = 300;
+    public static final int MAX_OVERLAY_SCALE_PERCENT           = 500;
     public static final int DEFAULT_OVERLAY_SCALE_PERCENT       = 200;
 
     // ═══════════════════════════════════════════════════════════════════════
